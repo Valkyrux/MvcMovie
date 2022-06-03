@@ -1,0 +1,86 @@
+﻿@{
+    ViewBag.Title = "Tabella con i film disponibili";
+    ViewBag.TitoloPagina = "Il mio Movie Store";
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+    string[] TableHeader = new string[] { "Poster", "MovieID", "Titolo", "Genere", "Prezzo" };
+
+              
+    Func<dynamic, IHtmlContent> StampaTitolo(Movie movie) =>
+    @<h1>@movie.Title
+    </h1>;
+
+     Func<dynamic, IHtmlContent> StampaRiga(Movie movie) =>
+    @<tr class="bg-primary text-light">
+                            <td class="image-container"><img src="@Url.Content(@movie.Photo)"  alt="@movie.AlternateText" runat="server"/></td>
+
+                            <td>
+                                @movie.Id
+                            </td>
+                        
+                            <td>
+                                @movie.Title
+                            </td>
+                        
+                            <td>
+                                @movie.Genre
+                            </td>
+                        
+                            <td>
+                                @movie.Price
+                            </td>                       
+                        </tr>;
+}
+<h2>Lista di film per il giorno @DateTime.Now.ToShortDateString()</h2>
+
+<div class="table">
+    <table>
+        <thead>
+            <tr>
+                @foreach (string colName in TableHeader)
+                {
+                    <th>
+                        @colName
+                    </th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                string Titolo, MovieID, Genere, Prezzo, ImgPath, ImgText;
+                if(Model != null)
+                {
+                    foreach(var data in Model)
+                    {
+                        MovieID = Convert.ToString(((Movie)data).Id);
+                        Titolo = ((Movie)data).Title;
+                        Genere =  ((Movie)data).Genre;
+                        Prezzo = Convert.ToString(((Movie)data).Price);
+                        ImgPath = ((Movie)data).Photo;
+                        ImgText = ((Movie)data).AlternateText;
+
+                        <tr>
+                            <td class="image-container"><img src="@Url.Content(@ImgPath)"  alt="@ImgText" runat="server"/></td>
+
+                            <td>
+                                @MovieID
+                            </td>
+                        
+                            <td>
+                                @StampaTitolo((Movie)data)(null)
+                            </td>
+                        
+                            <td>
+                                @Genere
+                            </td>
+                        
+                            <td>
+                                @Prezzo
+                            </td>                       
+                        </tr>
+                        @StampaRiga((Movie)data)(null)
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>
